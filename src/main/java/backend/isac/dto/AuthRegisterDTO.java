@@ -1,4 +1,4 @@
-package backend.isac.security.dto;
+package backend.isac.dto;
 
 import backend.isac.model.enums.ERole;
 

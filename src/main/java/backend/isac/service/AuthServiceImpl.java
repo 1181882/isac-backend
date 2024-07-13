@@ -1,14 +1,17 @@
 package backend.isac.service;
 
+import backend.isac.exception.AccessDeniedException;
+import backend.isac.exception.UserNotAuthenticatedException;
+import backend.isac.exception.UserNotFoundException;
 import backend.isac.model.User;
 import backend.isac.model.UserVerificationToken;
 import backend.isac.model.enums.ERole;
 import backend.isac.repository.UserRepository;
 import backend.isac.repository.UserVerificationTokenRepository;
-import backend.isac.security.dto.AuthLoginDTO;
-import backend.isac.security.dto.AuthRegisterDTO;
-import backend.isac.security.dto.AuthResponseDTO;
-import backend.isac.security.dto.ResetPasswordDTO;
+import backend.isac.dto.AuthLoginDTO;
+import backend.isac.dto.AuthRegisterDTO;
+import backend.isac.dto.AuthResponseDTO;
+import backend.isac.dto.ResetPasswordDTO;
 import backend.isac.security.jwt.JwtUtils;
 import jakarta.servlet.http.Cookie;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -17,16 +20,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -190,7 +191,12 @@ public class AuthServiceImpl implements AuthService {
     }
 
     public boolean deleteAccount(String email) {
+
         Optional<User> foundUser = userRepository.findByEmail(email);
+        if (!foundUser.isPresent()) {
+            throw new UserNotFoundException("User not found.");
+        }
+
         long currentTimeMillis = System.currentTimeMillis();
         String newEmail = "deleted" + currentTimeMillis + "@deleted.deleted";
         if (foundUser.isPresent()) {
@@ -208,15 +214,18 @@ public class AuthServiceImpl implements AuthService {
         return false;
     }
 
+    public boolean deleteAccountAsAdmin(String email, String currentUser) {
+        Optional<User> foundUser = userRepository.findByEmail(currentUser);
+        if (!foundUser.get().getRole().equals(ERole.ADMIN)) {
+            throw new AccessDeniedException("Do not have permission to delete this account.");
+        }
+        return deleteAccount(email);
+    }
+
     private boolean isValidPassword(String password) {
         // At least one upper case, one lower case, one digit, one special character, min. length of 8
         String regEx = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$";
         return password.matches(regEx);
-    }
-
-    private boolean isValidPhoneNumber(String number) {
-        // string has only numbers, no length limit
-        return number.matches("[0-9]+");
     }
 
     public Cookie createCookie(String jwtToken) {
@@ -228,6 +237,11 @@ public class AuthServiceImpl implements AuthService {
     }
 
     public Cookie logout() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal().equals("anonymousUser")) {
+            throw new UserNotAuthenticatedException("User is not logged in.");
+        }
+
         Cookie cookie = new Cookie(jwtCookie, "");
         cookie.setPath("/"); // Global
         cookie.setMaxAge(0);

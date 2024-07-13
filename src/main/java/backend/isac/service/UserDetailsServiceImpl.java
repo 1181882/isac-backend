@@ -1,4 +1,4 @@
-package backend.isac.security.service;
+package backend.isac.service;
 
 import backend.isac.model.User;
 import backend.isac.repository.UserRepository;

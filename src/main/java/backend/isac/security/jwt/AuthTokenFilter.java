@@ -1,6 +1,6 @@
 package backend.isac.security.jwt;
 
-import backend.isac.security.service.UserDetailsServiceImpl;
+import backend.isac.service.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;

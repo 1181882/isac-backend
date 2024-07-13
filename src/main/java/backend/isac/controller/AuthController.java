@@ -1,10 +1,11 @@
 package backend.isac.controller;
 
 import backend.isac.dto.ResponseMessageDTO;
-import backend.isac.security.dto.AuthLoginDTO;
-import backend.isac.security.dto.AuthRegisterDTO;
-import backend.isac.security.dto.AuthResponseDTO;
-import backend.isac.security.dto.ResetPasswordDTO;
+import backend.isac.dto.AuthLoginDTO;
+import backend.isac.dto.AuthRegisterDTO;
+import backend.isac.dto.AuthResponseDTO;
+import backend.isac.dto.ResetPasswordDTO;
+import backend.isac.exception.UserNotAuthenticatedException;
 import backend.isac.service.AuthService;
 import jakarta.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,11 +94,28 @@ public class AuthController {
 
     @DeleteMapping("/delete-account")
     public ResponseEntity<ResponseMessageDTO> deleteAccount(@AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
+            throw new UserNotAuthenticatedException("User not authenticated.");
+        }
         boolean isDeleted = authService.deleteAccount(userDetails.getUsername());
         if (isDeleted) {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body(new ResponseMessageDTO("Account deleted successfully!"));
+        } else {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_ACCEPTABLE)
+                    .body(new ResponseMessageDTO("Please try again."));
+        }
+    }
+
+    @DeleteMapping("/admin/delete-account/{email}")
+    public ResponseEntity<ResponseMessageDTO> deleteAccountAsAdmin(@PathVariable String email, @AuthenticationPrincipal UserDetails currentUser) {
+        boolean isDeleted = authService.deleteAccountAsAdmin(email, currentUser.getUsername());
+        if (isDeleted) {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new ResponseMessageDTO("Account deleted successfully by admin!"));
         } else {
             return ResponseEntity
                     .status(HttpStatus.NOT_ACCEPTABLE)
