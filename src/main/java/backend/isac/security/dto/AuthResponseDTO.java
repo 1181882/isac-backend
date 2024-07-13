@@ -1,5 +1,6 @@
 package backend.isac.security.dto;
 
+import backend.isac.model.enums.ERole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +15,6 @@ public class AuthResponseDTO {
     private final String name;
     private final String email;
     private String token;
-    private final List<String> role;
+    private final ERole role;
 
 }

@@ -21,7 +21,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User user = userRepository.findByEmail(email) //Original: userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with email: " + email));
         // Open a Hibernate session to initialize the roles collection
-        Hibernate.initialize(user.getRoles());
+        Hibernate.initialize(user.getRole());
         return user;
     }
 }

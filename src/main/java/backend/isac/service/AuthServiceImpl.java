@@ -60,12 +60,15 @@ public class AuthServiceImpl implements AuthService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = this.jwtUtils.generateJwtToken(authentication);
         User userDetails = (User) authentication.getPrincipal();
+
+        // Atualizar lastLoginAt
+        userDetails.setLastLoginAt(LocalDateTime.now());
+        userRepository.save(userDetails);
+
         String name = userDetails.getFirstName() + " " + userDetails.getLastName();
         String email = userDetails.getEmail();
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
-                .collect(Collectors.toList());
-        return new AuthResponseDTO(name, email, jwt, roles);
+        ERole role = userDetails.getRole();
+        return new AuthResponseDTO(name, email, jwt, role);
     }
 
     public boolean registerUser(AuthRegisterDTO registerDTO) {
@@ -76,15 +79,13 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException("Error: invalid password!");
         }
         // Create new user
-        Set<ERole> roles = new HashSet<>();
-        roles.add(ERole.USER);
         User newUser = User.builder()
                 .firstName(registerDTO.firstName)
                 .lastName(registerDTO.lastName)
                 .email(registerDTO.email)
                 .password(encoder.encode(registerDTO.password))
                 .createdAt(LocalDateTime.now())
-                .roles(roles)
+                .role(registerDTO.role)
                 .isActive(true) //Set to false if we are going to send activation account emails
                 .build();
         userRepository.save(newUser);
@@ -200,7 +201,7 @@ public class AuthServiceImpl implements AuthService {
             updatedUser.setLastName("deleted");
             updatedUser.setEmail(newEmail);
             updatedUser.setPassword(String.valueOf(currentTimeMillis));
-            updatedUser.setRoles(new HashSet<>());
+            updatedUser.setRole(ERole.DELETED);
             userRepository.save(updatedUser);
             return true;
         }

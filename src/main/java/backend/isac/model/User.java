@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 @Entity
@@ -51,11 +52,15 @@ public class User implements UserDetails {
     @EqualsAndHashCode.Exclude
     private LocalDateTime createdAt;
 
-    @ElementCollection(targetClass = ERole.class)
+    /*@ElementCollection(targetClass = ERole.class)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Set<ERole> roles;
+    private Set<ERole> roles;*/
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_role", nullable = false)
+    private ERole role;
 
     @Builder.Default
     @Column(name = "active", nullable = false)
@@ -68,12 +73,9 @@ public class User implements UserDetails {
     /**
      * Getters & Setters
      **/
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
-                .collect(Collectors.toList());
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
     public Long getId() {
@@ -124,12 +126,12 @@ public class User implements UserDetails {
         this.createdAt = createdAt;
     }
 
-    public Set<ERole> getRoles() {
-        return roles;
+    public ERole getRole() {
+        return role;
     }
 
-    public void setRoles(Set<ERole> roles) {
-        this.roles = roles;
+    public void setRole(ERole role) {
+        this.role = role;
     }
 
     public boolean isActive() {
