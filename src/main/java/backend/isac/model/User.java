@@ -52,12 +52,6 @@ public class User implements UserDetails {
     @EqualsAndHashCode.Exclude
     private LocalDateTime createdAt;
 
-    /*@ElementCollection(targetClass = ERole.class)
-    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Set<ERole> roles;*/
-
     @Enumerated(EnumType.STRING)
     @Column(name = "user_role", nullable = false)
     private ERole role;
