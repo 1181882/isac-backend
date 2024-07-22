@@ -1,12 +1,12 @@
 package backend.isac.model.enums;
 
-public enum EAplicationType {
+public enum EApplicationType {
     LOCAL("Local"),
     WEB("Web");
 
     private String value;
 
-    EAplicationType(String value) {
+    EApplicationType(String value) {
         this.value = value;
     }
 
