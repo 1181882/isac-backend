@@ -4,7 +4,6 @@ import backend.isac.dto.AutomatedApplicationDTO;
 import backend.isac.exception.ResourceNotFoundException;
 import backend.isac.model.AutomatedApplication;
 import backend.isac.repository.AutomatedApplicationRepository;
-import backend.isac.service.AutomatedApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
