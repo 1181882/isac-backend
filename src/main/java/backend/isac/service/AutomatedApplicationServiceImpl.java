@@ -2,6 +2,7 @@ package backend.isac.service;
 
 import backend.isac.dto.AutomatedApplicationDTO;
 import backend.isac.exception.ResourceNotFoundException;
+import backend.isac.mapper.AutomatedApplicationMapper;
 import backend.isac.model.AutomatedApplication;
 import backend.isac.repository.AutomatedApplicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,17 +15,19 @@ import java.util.stream.Collectors;
 public class AutomatedApplicationServiceImpl implements AutomatedApplicationService {
 
     private final AutomatedApplicationRepository automatedApplicationRepository;
+    private final AutomatedApplicationMapper automatedApplicationMapper;
 
     @Autowired
-    public AutomatedApplicationServiceImpl(AutomatedApplicationRepository automatedApplicationRepository) {
+    public AutomatedApplicationServiceImpl(AutomatedApplicationRepository automatedApplicationRepository, AutomatedApplicationMapper automatedApplicationMapper) {
         this.automatedApplicationRepository = automatedApplicationRepository;
+        this.automatedApplicationMapper = automatedApplicationMapper;
     }
 
     @Override
     public AutomatedApplicationDTO createAutomatedApplication(AutomatedApplicationDTO automatedApplicationDTO) {
-        AutomatedApplication automatedApplication = toEntity(automatedApplicationDTO);
+        AutomatedApplication automatedApplication = automatedApplicationMapper.toEntity(automatedApplicationDTO);
         AutomatedApplication savedApplication = automatedApplicationRepository.save(automatedApplication);
-        return toDTO(savedApplication);
+        return automatedApplicationMapper.toDTO(savedApplication);
     }
 
     @Override
@@ -37,7 +40,7 @@ public class AutomatedApplicationServiceImpl implements AutomatedApplicationServ
         automatedApplication.setAutomationType(automatedApplicationDTO.getAutomationType());
 
         AutomatedApplication updatedApplication = automatedApplicationRepository.save(automatedApplication);
-        return toDTO(updatedApplication);
+        return automatedApplicationMapper.toDTO(updatedApplication);
     }
 
     @Override
@@ -51,30 +54,13 @@ public class AutomatedApplicationServiceImpl implements AutomatedApplicationServ
     public AutomatedApplicationDTO getAutomatedApplicationById(Long id) {
         AutomatedApplication automatedApplication = automatedApplicationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Application not found with id " + id));
-        return toDTO(automatedApplication);
+        return automatedApplicationMapper.toDTO(automatedApplication);
     }
 
     @Override
     public List<AutomatedApplicationDTO> getAllAutomatedApplications() {
         return automatedApplicationRepository.findAll().stream()
-                .map(this::toDTO)
+                .map(automatedApplicationMapper::toDTO)
                 .collect(Collectors.toList());
-    }
-
-    private AutomatedApplication toEntity(AutomatedApplicationDTO automatedApplicationDTO) {
-        AutomatedApplication automatedApplication = new AutomatedApplication();
-        automatedApplication.setName(automatedApplicationDTO.getName());
-        automatedApplication.setApplicationType(automatedApplicationDTO.getApplicationType());
-        automatedApplication.setAutomationType(automatedApplicationDTO.getAutomationType());
-        return automatedApplication;
-    }
-
-    private AutomatedApplicationDTO toDTO(AutomatedApplication automatedApplication) {
-        AutomatedApplicationDTO dto = new AutomatedApplicationDTO();
-        dto.setId(automatedApplication.getId());
-        dto.setName(automatedApplication.getName());
-        dto.setApplicationType(automatedApplication.getApplicationType());
-        dto.setAutomationType(automatedApplication.getAutomationType());
-        return dto;
     }
 }

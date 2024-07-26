@@ -2,6 +2,7 @@ package backend.isac.service;
 
 import backend.isac.dto.ProjectDTO;
 import backend.isac.exception.ResourceNotFoundException;
+import backend.isac.mapper.ProjectMapper;
 import backend.isac.model.IUACode;
 import backend.isac.model.Project;
 import backend.isac.repository.IUACodeRepository;
@@ -17,11 +18,13 @@ public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
     private final IUACodeRepository iuaCodeRepository;
+    private final ProjectMapper projectMapper;
 
     @Autowired
-    public ProjectServiceImpl(ProjectRepository projectRepository, IUACodeRepository iuaCodeRepository) {
+    public ProjectServiceImpl(ProjectRepository projectRepository, IUACodeRepository iuaCodeRepository, ProjectMapper projectMapper) {
         this.projectRepository = projectRepository;
         this.iuaCodeRepository = iuaCodeRepository;
+        this.projectMapper = projectMapper;
     }
 
     @Override
@@ -29,9 +32,10 @@ public class ProjectServiceImpl implements ProjectService {
         IUACode iuaCode = iuaCodeRepository.findById(projectDTO.getIuaCodeId())
                 .orElseThrow(() -> new ResourceNotFoundException("IUACode not found with id " + projectDTO.getIuaCodeId()));
 
-        Project project = toEntity(projectDTO, iuaCode);
+        Project project = projectMapper.toEntity(projectDTO);
+        project.setIuaCode(iuaCode);
         Project savedProject = projectRepository.save(project);
-        return toDTO(savedProject);
+        return projectMapper.toDTO(savedProject);
     }
 
     @Override
@@ -51,7 +55,7 @@ public class ProjectServiceImpl implements ProjectService {
         project.setStatus(projectDTO.getStatus());
 
         Project updatedProject = projectRepository.save(project);
-        return toDTO(updatedProject);
+        return projectMapper.toDTO(updatedProject);
     }
 
     @Override
@@ -65,38 +69,13 @@ public class ProjectServiceImpl implements ProjectService {
     public ProjectDTO getProjectById(Long id) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with id " + id));
-        return toDTO(project);
+        return projectMapper.toDTO(project);
     }
 
     @Override
     public List<ProjectDTO> getAllProjects() {
         return projectRepository.findAll().stream()
-                .map(this::toDTO)
+                .map(projectMapper::toDTO)
                 .collect(Collectors.toList());
-    }
-
-    private ProjectDTO toDTO(Project project) {
-        ProjectDTO dto = new ProjectDTO();
-        dto.setId(project.getId());
-        dto.setProjectCode(project.getProjectCode());
-        dto.setName(project.getName());
-        dto.setIuaCodeId(project.getIuaCode().getId());
-        dto.setImpact(project.getImpact());
-        dto.setSupportTeam(project.getSupportTeam());
-        dto.setAsset(project.getAsset());
-        dto.setStatus(project.getStatus());
-        return dto;
-    }
-
-    private Project toEntity(ProjectDTO projectDTO, IUACode iuaCode) {
-        Project project = new Project();
-        project.setProjectCode(projectDTO.getProjectCode());
-        project.setName(projectDTO.getName());
-        project.setIuaCode(iuaCode);
-        project.setImpact(projectDTO.getImpact());
-        project.setSupportTeam(projectDTO.getSupportTeam());
-        project.setAsset(projectDTO.getAsset());
-        project.setStatus(projectDTO.getStatus());
-        return project;
     }
 }

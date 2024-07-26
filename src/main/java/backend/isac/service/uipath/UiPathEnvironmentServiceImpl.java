@@ -1,7 +1,7 @@
 package backend.isac.service.uipath;
 
 import backend.isac.dto.uipath.UiPathEnvironmentDTO;
-import backend.isac.mapper.EntityMapper;
+import backend.isac.mapper.uipath.UiPathEnvironmentMapper;
 import backend.isac.model.uipath.UiPathEnvironment;
 import backend.isac.repository.uipath.UiPathEnvironmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +14,10 @@ import java.util.stream.Collectors;
 public class UiPathEnvironmentServiceImpl implements UiPathEnvironmentService {
 
     private final UiPathEnvironmentRepository environmentRepository;
-    private final EntityMapper entityMapper;
+    private final UiPathEnvironmentMapper entityMapper;
 
     @Autowired
-    public UiPathEnvironmentServiceImpl(UiPathEnvironmentRepository environmentRepository, EntityMapper entityMapper) {
+    public UiPathEnvironmentServiceImpl(UiPathEnvironmentRepository environmentRepository, UiPathEnvironmentMapper entityMapper) {
         this.environmentRepository = environmentRepository;
         this.entityMapper = entityMapper;
     }

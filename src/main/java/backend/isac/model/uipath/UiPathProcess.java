@@ -1,5 +1,6 @@
 package backend.isac.model.uipath;
 
+import backend.isac.model.Version;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,7 +23,7 @@ public class UiPathProcess {
     @Column(name = "key_column")
     private String keyColumn; // Renomeie a coluna para evitar conflito com palavras reservadas
 
-    private String version;
+    private Version version;
 
     @ManyToOne
     @JoinColumn(name = "folder_id")

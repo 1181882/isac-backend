@@ -1,7 +1,7 @@
 package backend.isac.service.uipath;
 
 import backend.isac.dto.uipath.*;
-import backend.isac.mapper.EntityMapper;
+import backend.isac.mapper.uipath.UiPathFolderMapper;
 import backend.isac.model.uipath.*;
 import backend.isac.repository.uipath.UiPathFolderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +15,10 @@ import java.util.stream.Collectors;
 public class UiPathFolderServiceImpl implements UiPathFolderService {
 
     private final UiPathFolderRepository folderRepository;
-    private final EntityMapper entityMapper;
+    private final UiPathFolderMapper entityMapper;
 
     @Autowired
-    public UiPathFolderServiceImpl(UiPathFolderRepository folderRepository, EntityMapper entityMapper) {
+    public UiPathFolderServiceImpl(UiPathFolderRepository folderRepository, UiPathFolderMapper entityMapper) {
         this.folderRepository = folderRepository;
         this.entityMapper = entityMapper;
     }

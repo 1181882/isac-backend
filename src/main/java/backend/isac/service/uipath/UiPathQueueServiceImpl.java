@@ -1,7 +1,7 @@
 package backend.isac.service.uipath;
 
 import backend.isac.dto.uipath.UiPathQueueDTO;
-import backend.isac.mapper.EntityMapper;
+import backend.isac.mapper.uipath.UiPathQueueMapper;
 import backend.isac.model.uipath.UiPathQueue;
 import backend.isac.repository.uipath.UiPathQueueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +14,10 @@ import java.util.stream.Collectors;
 public class UiPathQueueServiceImpl implements UiPathQueueService {
 
     private final UiPathQueueRepository queueRepository;
-    private final EntityMapper entityMapper;
+    private final UiPathQueueMapper entityMapper;
 
     @Autowired
-    public UiPathQueueServiceImpl(UiPathQueueRepository queueRepository, EntityMapper entityMapper) {
+    public UiPathQueueServiceImpl(UiPathQueueRepository queueRepository, UiPathQueueMapper entityMapper) {
         this.queueRepository = queueRepository;
         this.entityMapper = entityMapper;
     }

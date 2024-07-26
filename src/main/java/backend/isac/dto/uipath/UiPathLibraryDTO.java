@@ -1,5 +1,6 @@
 package backend.isac.dto.uipath;
 
+import backend.isac.model.Version;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -9,7 +10,7 @@ public class UiPathLibraryDTO {
     private Long id;
     private String name;
     private String description;
-    private String version;
+    private Version version;
     private Boolean isLatestVersion;
     private String publishedBy;
     private LocalDate publishedOn;

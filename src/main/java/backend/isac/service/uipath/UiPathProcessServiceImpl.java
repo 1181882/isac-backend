@@ -1,7 +1,7 @@
 package backend.isac.service.uipath;
 
 import backend.isac.dto.uipath.UiPathProcessDTO;
-import backend.isac.mapper.EntityMapper;
+import backend.isac.mapper.uipath.UiPathProcessMapper;
 import backend.isac.model.uipath.UiPathProcess;
 import backend.isac.repository.uipath.UiPathProcessRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +14,10 @@ import java.util.stream.Collectors;
 public class UiPathProcessServiceImpl implements UiPathProcessService {
 
     private final UiPathProcessRepository processRepository;
-    private final EntityMapper entityMapper;
+    private final UiPathProcessMapper entityMapper;
 
     @Autowired
-    public UiPathProcessServiceImpl(UiPathProcessRepository processRepository, EntityMapper entityMapper) {
+    public UiPathProcessServiceImpl(UiPathProcessRepository processRepository, UiPathProcessMapper entityMapper) {
         this.processRepository = processRepository;
         this.entityMapper = entityMapper;
     }

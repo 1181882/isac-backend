@@ -2,9 +2,9 @@ package backend.isac.service;
 
 import backend.isac.dto.JiraProjectDTO;
 import backend.isac.exception.ResourceNotFoundException;
+import backend.isac.mapper.JiraProjectMapper;
 import backend.isac.model.JiraProject;
 import backend.isac.repository.JiraProjectRepository;
-import backend.isac.service.JiraProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,17 +15,19 @@ import java.util.stream.Collectors;
 public class JiraProjectServiceImpl implements JiraProjectService {
 
     private final JiraProjectRepository jiraProjectRepository;
+    private final JiraProjectMapper jiraProjectMapper;
 
     @Autowired
-    public JiraProjectServiceImpl(JiraProjectRepository jiraProjectRepository) {
+    public JiraProjectServiceImpl(JiraProjectRepository jiraProjectRepository, JiraProjectMapper jiraProjectMapper) {
         this.jiraProjectRepository = jiraProjectRepository;
+        this.jiraProjectMapper = jiraProjectMapper;
     }
 
     @Override
     public JiraProjectDTO createJiraProject(JiraProjectDTO jiraProjectDTO) {
-        JiraProject jiraProject = toEntity(jiraProjectDTO);
+        JiraProject jiraProject = jiraProjectMapper.toEntity(jiraProjectDTO);
         JiraProject savedProject = jiraProjectRepository.save(jiraProject);
-        return toDTO(savedProject);
+        return jiraProjectMapper.toDTO(savedProject);
     }
 
     @Override
@@ -36,7 +38,7 @@ public class JiraProjectServiceImpl implements JiraProjectService {
         jiraProject.setName(jiraProjectDTO.getName());
 
         JiraProject updatedProject = jiraProjectRepository.save(jiraProject);
-        return toDTO(updatedProject);
+        return jiraProjectMapper.toDTO(updatedProject);
     }
 
     @Override
@@ -50,26 +52,13 @@ public class JiraProjectServiceImpl implements JiraProjectService {
     public JiraProjectDTO getJiraProjectById(Long id) {
         JiraProject jiraProject = jiraProjectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Jira Project not found with id " + id));
-        return toDTO(jiraProject);
+        return jiraProjectMapper.toDTO(jiraProject);
     }
 
     @Override
     public List<JiraProjectDTO> getAllJiraProjects() {
         return jiraProjectRepository.findAll().stream()
-                .map(this::toDTO)
+                .map(jiraProjectMapper::toDTO)
                 .collect(Collectors.toList());
-    }
-
-    private JiraProject toEntity(JiraProjectDTO jiraProjectDTO) {
-        JiraProject jiraProject = new JiraProject();
-        jiraProject.setName(jiraProjectDTO.getName());
-        return jiraProject;
-    }
-
-    private JiraProjectDTO toDTO(JiraProject jiraProject) {
-        JiraProjectDTO dto = new JiraProjectDTO();
-        dto.setId(jiraProject.getId());
-        dto.setName(jiraProject.getName());
-        return dto;
     }
 }

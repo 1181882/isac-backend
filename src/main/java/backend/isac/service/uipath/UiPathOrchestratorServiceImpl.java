@@ -1,7 +1,7 @@
 package backend.isac.service.uipath;
 
 import backend.isac.dto.uipath.UiPathOrchestratorDTO;
-import backend.isac.mapper.EntityMapper;
+import backend.isac.mapper.uipath.UiPathOrchestratorMapper;
 import backend.isac.model.uipath.UiPathOrchestrator;
 import backend.isac.repository.uipath.UiPathOrchestratorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +14,10 @@ import java.util.stream.Collectors;
 public class UiPathOrchestratorServiceImpl implements UiPathOrchestratorService {
 
     private final UiPathOrchestratorRepository orchestratorRepository;
-    private final EntityMapper entityMapper;
+    private final UiPathOrchestratorMapper entityMapper;
 
     @Autowired
-    public UiPathOrchestratorServiceImpl(UiPathOrchestratorRepository orchestratorRepository, EntityMapper entityMapper) {
+    public UiPathOrchestratorServiceImpl(UiPathOrchestratorRepository orchestratorRepository, UiPathOrchestratorMapper entityMapper) {
         this.orchestratorRepository = orchestratorRepository;
         this.entityMapper = entityMapper;
     }

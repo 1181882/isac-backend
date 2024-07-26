@@ -1,9 +1,10 @@
 package backend.isac.service;
 
 import backend.isac.dto.DashboardDTO;
+import backend.isac.exception.ResourceNotFoundException;
+import backend.isac.mapper.DashboardMapper;
 import backend.isac.model.Dashboard;
 import backend.isac.repository.DashboardRepository;
-import backend.isac.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,29 +15,31 @@ import java.util.stream.Collectors;
 public class DashboardServiceImpl implements DashboardService {
 
     private final DashboardRepository dashboardRepository;
+    private final DashboardMapper dashboardMapper;
 
     @Autowired
-    public DashboardServiceImpl(DashboardRepository dashboardRepository) {
+    public DashboardServiceImpl(DashboardRepository dashboardRepository, DashboardMapper dashboardMapper) {
         this.dashboardRepository = dashboardRepository;
+        this.dashboardMapper = dashboardMapper;
     }
 
     @Override
     public List<DashboardDTO> getAllDashboards() {
-        return dashboardRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
+        return dashboardRepository.findAll().stream().map(dashboardMapper::toDTO).collect(Collectors.toList());
     }
 
     @Override
     public DashboardDTO getDashboardById(Long id) {
         Dashboard dashboard = dashboardRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Dashboard not found with id " + id));
-        return toDTO(dashboard);
+        return dashboardMapper.toDTO(dashboard);
     }
 
     @Override
     public DashboardDTO createDashboard(DashboardDTO dashboardDTO) {
-        Dashboard dashboard = toEntity(dashboardDTO);
+        Dashboard dashboard = dashboardMapper.toEntity(dashboardDTO);
         Dashboard savedDashboard = dashboardRepository.save(dashboard);
-        return toDTO(savedDashboard);
+        return dashboardMapper.toDTO(savedDashboard);
     }
 
     @Override
@@ -46,7 +49,7 @@ public class DashboardServiceImpl implements DashboardService {
         dashboard.setDashboardName(dashboardDTO.getDashboardName());
         dashboard.setUrl(dashboardDTO.getUrl());
         Dashboard updatedDashboard = dashboardRepository.save(dashboard);
-        return toDTO(updatedDashboard);
+        return dashboardMapper.toDTO(updatedDashboard);
     }
 
     @Override
@@ -55,21 +58,5 @@ public class DashboardServiceImpl implements DashboardService {
             throw new ResourceNotFoundException("Dashboard not found with id " + id);
         }
         dashboardRepository.deleteById(id);
-    }
-
-    private Dashboard toEntity(DashboardDTO dto) {
-        Dashboard dashboard = new Dashboard();
-        dashboard.setId(dto.getId());
-        dashboard.setDashboardName(dto.getDashboardName());
-        dashboard.setUrl(dto.getUrl());
-        return dashboard;
-    }
-
-    private DashboardDTO toDTO(Dashboard dashboard) {
-        DashboardDTO dto = new DashboardDTO();
-        dto.setId(dashboard.getId());
-        dto.setDashboardName(dashboard.getDashboardName());
-        dto.setUrl(dashboard.getUrl());
-        return dto;
     }
 }

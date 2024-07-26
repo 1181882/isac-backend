@@ -2,6 +2,7 @@ package backend.isac.service;
 
 import backend.isac.dto.JiraIssueDTO;
 import backend.isac.exception.ResourceNotFoundException;
+import backend.isac.mapper.JiraIssueMapper;
 import backend.isac.model.JiraIssue;
 import backend.isac.model.JiraProject;
 import backend.isac.repository.JiraIssueRepository;
@@ -17,11 +18,13 @@ public class JiraIssueServiceImpl implements JiraIssueService {
 
     private final JiraIssueRepository jiraIssueRepository;
     private final JiraProjectRepository jiraProjectRepository;
+    private final JiraIssueMapper jiraIssueMapper;
 
     @Autowired
-    public JiraIssueServiceImpl(JiraIssueRepository jiraIssueRepository, JiraProjectRepository jiraProjectRepository) {
+    public JiraIssueServiceImpl(JiraIssueRepository jiraIssueRepository, JiraProjectRepository jiraProjectRepository, JiraIssueMapper jiraIssueMapper) {
         this.jiraIssueRepository = jiraIssueRepository;
         this.jiraProjectRepository = jiraProjectRepository;
+        this.jiraIssueMapper = jiraIssueMapper;
     }
 
     @Override
@@ -29,11 +32,11 @@ public class JiraIssueServiceImpl implements JiraIssueService {
         JiraProject jiraProject = jiraProjectRepository.findById(jiraIssueDTO.getJiraProjectId())
                 .orElseThrow(() -> new ResourceNotFoundException("JiraProject not found with id " + jiraIssueDTO.getJiraProjectId()));
 
-        JiraIssue jiraIssue = toEntity(jiraIssueDTO);
+        JiraIssue jiraIssue = jiraIssueMapper.toEntity(jiraIssueDTO);
         jiraIssue.setJiraProject(jiraProject);
 
         JiraIssue savedIssue = jiraIssueRepository.save(jiraIssue);
-        return toDTO(savedIssue);
+        return jiraIssueMapper.toDTO(savedIssue);
     }
 
     @Override
@@ -49,7 +52,7 @@ public class JiraIssueServiceImpl implements JiraIssueService {
         jiraIssue.setJiraProject(jiraProject);
 
         JiraIssue updatedIssue = jiraIssueRepository.save(jiraIssue);
-        return toDTO(updatedIssue);
+        return jiraIssueMapper.toDTO(updatedIssue);
     }
 
     @Override
@@ -63,29 +66,13 @@ public class JiraIssueServiceImpl implements JiraIssueService {
     public JiraIssueDTO getJiraIssueById(Long id) {
         JiraIssue jiraIssue = jiraIssueRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("JiraIssue not found with id " + id));
-        return toDTO(jiraIssue);
+        return jiraIssueMapper.toDTO(jiraIssue);
     }
 
     @Override
     public List<JiraIssueDTO> getAllJiraIssues() {
         return jiraIssueRepository.findAll().stream()
-                .map(this::toDTO)
+                .map(jiraIssueMapper::toDTO)
                 .collect(Collectors.toList());
-    }
-
-    private JiraIssue toEntity(JiraIssueDTO jiraIssueDTO) {
-        JiraIssue jiraIssue = new JiraIssue();
-        jiraIssue.setName(jiraIssueDTO.getName());
-        jiraIssue.setIssueType(jiraIssueDTO.getIssueType());
-        return jiraIssue;
-    }
-
-    private JiraIssueDTO toDTO(JiraIssue jiraIssue) {
-        JiraIssueDTO dto = new JiraIssueDTO();
-        dto.setId(jiraIssue.getId());
-        dto.setName(jiraIssue.getName());
-        dto.setIssueType(jiraIssue.getIssueType());
-        dto.setJiraProjectId(jiraIssue.getJiraProject().getId());
-        return dto;
     }
 }

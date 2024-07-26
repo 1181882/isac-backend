@@ -2,6 +2,7 @@ package backend.isac.service;
 
 import backend.isac.dto.CompanyDTO;
 import backend.isac.exception.ResourceNotFoundException;
+import backend.isac.mapper.CompanyMapper;
 import backend.isac.model.Company;
 import backend.isac.repository.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,27 +15,29 @@ import java.util.stream.Collectors;
 public class CompanyServiceImpl implements CompanyService {
 
     private final CompanyRepository companyRepository;
+    private final CompanyMapper companyMapper;
 
     @Autowired
-    public CompanyServiceImpl(CompanyRepository companyRepository) {
+    public CompanyServiceImpl(CompanyRepository companyRepository, CompanyMapper companyMapper) {
         this.companyRepository = companyRepository;
+        this.companyMapper = companyMapper;
     }
 
     @Override
     public List<CompanyDTO> findAll() {
-        return companyRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
+        return companyRepository.findAll().stream().map(companyMapper::toDTO).collect(Collectors.toList());
     }
 
     @Override
     public CompanyDTO findById(Long id) {
-        return companyRepository.findById(id).map(this::toDTO)
+        return companyRepository.findById(id).map(companyMapper::toDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Company not found with id " + id));
     }
 
     @Override
     public CompanyDTO save(CompanyDTO companyDTO) {
-        Company company = toEntity(companyDTO);
-        return toDTO(companyRepository.save(company));
+        Company company = companyMapper.toEntity(companyDTO);
+        return companyMapper.toDTO(companyRepository.save(company));
     }
 
     @Override
@@ -42,21 +45,5 @@ public class CompanyServiceImpl implements CompanyService {
         Company company = companyRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Company not found with id " + id));
         companyRepository.delete(company);
-    }
-
-    private CompanyDTO toDTO(Company company) {
-        CompanyDTO dto = new CompanyDTO();
-        dto.setId(company.getId());
-        dto.setAbbreviation(company.getAbbreviation());
-        dto.setFullName(company.getFullName());
-        return dto;
-    }
-
-    private Company toEntity(CompanyDTO dto) {
-        Company company = new Company();
-        company.setId(dto.getId());
-        company.setAbbreviation(dto.getAbbreviation());
-        company.setFullName(dto.getFullName());
-        return company;
     }
 }

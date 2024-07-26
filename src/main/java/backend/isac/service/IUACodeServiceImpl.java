@@ -2,9 +2,9 @@ package backend.isac.service;
 
 import backend.isac.dto.IUACodeDTO;
 import backend.isac.exception.ResourceNotFoundException;
+import backend.isac.mapper.IUACodeMapper;
 import backend.isac.model.IUACode;
 import backend.isac.repository.IUACodeRepository;
-import backend.isac.service.IUACodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,20 +15,19 @@ import java.util.stream.Collectors;
 public class IUACodeServiceImpl implements IUACodeService {
 
     private final IUACodeRepository iuaCodeRepository;
+    private final IUACodeMapper iuaCodeMapper;
 
     @Autowired
-    public IUACodeServiceImpl(IUACodeRepository iuaCodeRepository) {
+    public IUACodeServiceImpl(IUACodeRepository iuaCodeRepository, IUACodeMapper iuaCodeMapper) {
         this.iuaCodeRepository = iuaCodeRepository;
+        this.iuaCodeMapper = iuaCodeMapper;
     }
 
     @Override
     public IUACodeDTO createIUACode(IUACodeDTO iuaCodeDTO) {
-        IUACode iuaCode = new IUACode();
-        iuaCode.setAbbreviation(iuaCodeDTO.getAbbreviation());
-        iuaCode.setFullName(iuaCodeDTO.getFullName());
-
+        IUACode iuaCode = iuaCodeMapper.toEntity(iuaCodeDTO);
         IUACode savedIUACode = iuaCodeRepository.save(iuaCode);
-        return toDTO(savedIUACode);
+        return iuaCodeMapper.toDTO(savedIUACode);
     }
 
     @Override
@@ -40,7 +39,7 @@ public class IUACodeServiceImpl implements IUACodeService {
         iuaCode.setFullName(iuaCodeDTO.getFullName());
 
         IUACode updatedIUACode = iuaCodeRepository.save(iuaCode);
-        return toDTO(updatedIUACode);
+        return iuaCodeMapper.toDTO(updatedIUACode);
     }
 
     @Override
@@ -54,21 +53,13 @@ public class IUACodeServiceImpl implements IUACodeService {
     public IUACodeDTO getIUACodeById(Long id) {
         IUACode iuaCode = iuaCodeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("IUACode not found with id " + id));
-        return toDTO(iuaCode);
+        return iuaCodeMapper.toDTO(iuaCode);
     }
 
     @Override
     public List<IUACodeDTO> getAllIUACodes() {
         return iuaCodeRepository.findAll().stream()
-                .map(this::toDTO)
+                .map(iuaCodeMapper::toDTO)
                 .collect(Collectors.toList());
-    }
-
-    private IUACodeDTO toDTO(IUACode iuaCode) {
-        IUACodeDTO dto = new IUACodeDTO();
-        dto.setId(iuaCode.getId());
-        dto.setAbbreviation(iuaCode.getAbbreviation());
-        dto.setFullName(iuaCode.getFullName());
-        return dto;
     }
 }

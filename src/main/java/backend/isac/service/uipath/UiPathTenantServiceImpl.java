@@ -1,7 +1,7 @@
 package backend.isac.service.uipath;
 
 import backend.isac.dto.uipath.UiPathTenantDTO;
-import backend.isac.mapper.EntityMapper;
+import backend.isac.mapper.uipath.UiPathTenantMapper;
 import backend.isac.model.uipath.UiPathTenant;
 import backend.isac.repository.uipath.UiPathTenantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +14,10 @@ import java.util.stream.Collectors;
 public class UiPathTenantServiceImpl implements UiPathTenantService {
 
     private final UiPathTenantRepository tenantRepository;
-    private final EntityMapper entityMapper;
+    private final UiPathTenantMapper entityMapper;
 
     @Autowired
-    public UiPathTenantServiceImpl(UiPathTenantRepository tenantRepository, EntityMapper entityMapper) {
+    public UiPathTenantServiceImpl(UiPathTenantRepository tenantRepository, UiPathTenantMapper entityMapper) {
         this.tenantRepository = tenantRepository;
         this.entityMapper = entityMapper;
     }

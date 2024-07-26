@@ -2,7 +2,10 @@ package backend.isac.service;
 
 import backend.isac.dto.DepartmentDTO;
 import backend.isac.exception.ResourceNotFoundException;
+import backend.isac.mapper.DepartmentMapper;
+import backend.isac.model.BusinessLine;
 import backend.isac.model.Department;
+import backend.isac.repository.BusinessLineRepository;
 import backend.isac.repository.DepartmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,27 +17,34 @@ import java.util.stream.Collectors;
 public class DepartmentServiceImpl implements DepartmentService {
 
     private final DepartmentRepository departmentRepository;
+    private final BusinessLineRepository businessLineRepository;
+    private final DepartmentMapper departmentMapper;
 
     @Autowired
-    public DepartmentServiceImpl(DepartmentRepository departmentRepository) {
+    public DepartmentServiceImpl(DepartmentRepository departmentRepository, BusinessLineRepository businessLineRepository, DepartmentMapper departmentMapper) {
         this.departmentRepository = departmentRepository;
+        this.businessLineRepository = businessLineRepository;
+        this.departmentMapper = departmentMapper;
     }
 
     @Override
     public List<DepartmentDTO> findAll() {
-        return departmentRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
+        return departmentRepository.findAll().stream().map(departmentMapper::toDTO).collect(Collectors.toList());
     }
 
     @Override
     public DepartmentDTO findById(Long id) {
-        return departmentRepository.findById(id).map(this::toDTO)
+        return departmentRepository.findById(id).map(departmentMapper::toDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Department not found with id " + id));
     }
 
     @Override
     public DepartmentDTO save(DepartmentDTO departmentDTO) {
-        Department department = toEntity(departmentDTO);
-        return toDTO(departmentRepository.save(department));
+        Department department = departmentMapper.toEntity(departmentDTO);
+        BusinessLine businessLine = businessLineRepository.findById(departmentDTO.getBusinessLineId())
+                .orElseThrow(() -> new ResourceNotFoundException("BusinessLine not found with id " + departmentDTO.getBusinessLineId()));
+        department.setBusinessLine(businessLine);
+        return departmentMapper.toDTO(departmentRepository.save(department));
     }
 
     @Override
@@ -43,23 +53,4 @@ public class DepartmentServiceImpl implements DepartmentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Department not found with id " + id));
         departmentRepository.delete(department);
     }
-
-    private DepartmentDTO toDTO(Department department) {
-        DepartmentDTO dto = new DepartmentDTO();
-        dto.setId(department.getId());
-        dto.setAbbreviation(department.getAbbreviation());
-        dto.setFullName(department.getFullName());
-        dto.setBusinessLineId(department.getBusinessLine().getId());
-        return dto;
-    }
-
-    private Department toEntity(DepartmentDTO dto) {
-        Department department = new Department();
-        department.setId(dto.getId());
-        department.setAbbreviation(dto.getAbbreviation());
-        department.setFullName(dto.getFullName());
-
-        return department;
-    }
-
 }

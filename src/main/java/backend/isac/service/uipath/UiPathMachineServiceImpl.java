@@ -1,7 +1,7 @@
 package backend.isac.service.uipath;
 
 import backend.isac.dto.uipath.UiPathMachineDTO;
-import backend.isac.mapper.EntityMapper;
+import backend.isac.mapper.uipath.UiPathMachineMapper;
 import backend.isac.model.uipath.UiPathMachine;
 import backend.isac.repository.uipath.UiPathMachineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +14,10 @@ import java.util.stream.Collectors;
 public class UiPathMachineServiceImpl implements UiPathMachineService {
 
     private final UiPathMachineRepository machineRepository;
-    private final EntityMapper entityMapper;
+    private final UiPathMachineMapper entityMapper;
 
     @Autowired
-    public UiPathMachineServiceImpl(UiPathMachineRepository machineRepository, EntityMapper entityMapper) {
+    public UiPathMachineServiceImpl(UiPathMachineRepository machineRepository, UiPathMachineMapper entityMapper) {
         this.machineRepository = machineRepository;
         this.entityMapper = entityMapper;
     }

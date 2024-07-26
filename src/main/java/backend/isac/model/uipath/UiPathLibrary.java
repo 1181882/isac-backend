@@ -1,5 +1,6 @@
 package backend.isac.model.uipath;
 
+import backend.isac.model.Version;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,7 +19,7 @@ public class UiPathLibrary {
 
     private String name;
     private String description;
-    private String version;
+    private Version version;
     private Boolean isLatestVersion;
     private String publishedBy;
     private LocalDate publishedOn;

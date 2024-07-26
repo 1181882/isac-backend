@@ -1,7 +1,7 @@
 package backend.isac.service.uipath;
 
 import backend.isac.dto.uipath.UiPathLicenseDTO;
-import backend.isac.mapper.EntityMapper;
+import backend.isac.mapper.uipath.UiPathLicenseMapper;
 import backend.isac.model.uipath.UiPathLicense;
 import backend.isac.repository.uipath.UiPathLicenseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +14,10 @@ import java.util.stream.Collectors;
 public class UiPathLicenseServiceImpl implements UiPathLicenseService {
 
     private final UiPathLicenseRepository licenseRepository;
-    private final EntityMapper entityMapper;
+    private final UiPathLicenseMapper entityMapper;
 
     @Autowired
-    public UiPathLicenseServiceImpl(UiPathLicenseRepository licenseRepository, EntityMapper entityMapper) {
+    public UiPathLicenseServiceImpl(UiPathLicenseRepository licenseRepository, UiPathLicenseMapper entityMapper) {
         this.licenseRepository = licenseRepository;
         this.entityMapper = entityMapper;
     }

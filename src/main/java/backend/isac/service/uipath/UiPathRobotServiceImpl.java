@@ -1,7 +1,7 @@
 package backend.isac.service.uipath;
 
 import backend.isac.dto.uipath.UiPathRobotDTO;
-import backend.isac.mapper.EntityMapper;
+import backend.isac.mapper.uipath.UiPathRobotMapper;
 import backend.isac.model.uipath.UiPathRobot;
 import backend.isac.repository.uipath.UiPathRobotRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +14,10 @@ import java.util.stream.Collectors;
 public class UiPathRobotServiceImpl implements UiPathRobotService {
 
     private final UiPathRobotRepository robotRepository;
-    private final EntityMapper entityMapper;
+    private final UiPathRobotMapper entityMapper;
 
     @Autowired
-    public UiPathRobotServiceImpl(UiPathRobotRepository robotRepository, EntityMapper entityMapper) {
+    public UiPathRobotServiceImpl(UiPathRobotRepository robotRepository, UiPathRobotMapper entityMapper) {
         this.robotRepository = robotRepository;
         this.entityMapper = entityMapper;
     }

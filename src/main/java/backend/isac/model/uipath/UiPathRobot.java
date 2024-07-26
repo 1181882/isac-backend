@@ -1,5 +1,6 @@
 package backend.isac.model.uipath;
 
+import backend.isac.model.Version;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ public class UiPathRobot {
 
     private String name;
     private String type;
-    private String version;
+    private Version version;
 
     @ManyToOne
     @JoinColumn(name = "machine_id")

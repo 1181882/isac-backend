@@ -1,7 +1,7 @@
 package backend.isac.service.uipath;
 
 import backend.isac.dto.uipath.UiPathTriggerDTO;
-import backend.isac.mapper.EntityMapper;
+import backend.isac.mapper.uipath.UiPathTriggerMapper;
 import backend.isac.model.uipath.UiPathTrigger;
 import backend.isac.repository.uipath.UiPathTriggerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +14,10 @@ import java.util.stream.Collectors;
 public class UiPathTriggerServiceImpl implements UiPathTriggerService {
 
     private final UiPathTriggerRepository triggerRepository;
-    private final EntityMapper entityMapper;
+    private final UiPathTriggerMapper entityMapper;
 
     @Autowired
-    public UiPathTriggerServiceImpl(UiPathTriggerRepository triggerRepository, EntityMapper entityMapper) {
+    public UiPathTriggerServiceImpl(UiPathTriggerRepository triggerRepository, UiPathTriggerMapper entityMapper) {
         this.triggerRepository = triggerRepository;
         this.entityMapper = entityMapper;
     }
