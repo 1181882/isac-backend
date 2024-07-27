@@ -1,6 +1,7 @@
 package backend.isac.model.uipath;
 
 import backend.isac.model.Version;
+import backend.isac.model.enums.EUipathLicenseType;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,9 @@ public class UiPathRobot {
     private String name;
     private String type;
     private Version version;
+
+    @Enumerated(EnumType.STRING)
+    private EUipathLicenseType licenseType;
 
     @ManyToOne
     @JoinColumn(name = "machine_id")

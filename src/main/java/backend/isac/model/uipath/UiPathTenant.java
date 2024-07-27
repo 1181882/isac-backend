@@ -25,9 +25,6 @@ public class UiPathTenant {
     private List<UiPathFolder> folders;
 
     @OneToMany(mappedBy = "tenant", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UiPathLicense> licenses;
-
-    @OneToMany(mappedBy = "tenant", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UiPathUser> users;
 
     @OneToMany(mappedBy = "tenant", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -21,7 +21,7 @@ public class UiPathProcess {
     private String description;
 
     @Column(name = "key_column")
-    private String keyColumn; // Renomeie a coluna para evitar conflito com palavras reservadas
+    private String keyColumn;
 
     private Version version;
 
