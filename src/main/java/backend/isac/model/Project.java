@@ -43,4 +43,8 @@ public class Project {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EStatus status;
+
+    @ManyToOne
+    @JoinColumn(name = "department_id", nullable = false)
+    private Department department;
 }

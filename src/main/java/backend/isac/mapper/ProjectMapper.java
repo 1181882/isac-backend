@@ -7,9 +7,11 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface ProjectMapper {
+    @Mapping(source = "department.id", target = "departmentId")
     @Mapping(source = "iuaCode.id", target = "iuaCodeId")
     ProjectDTO toDTO(Project project);
 
+    @Mapping(source = "departmentId", target = "department.id")
     @Mapping(source = "iuaCodeId", target = "iuaCode.id")
     Project toEntity(ProjectDTO projectDTO);
 }

@@ -16,4 +16,5 @@ public class ProjectDTO {
     private ESupportTeam supportTeam;
     private EAsset asset;
     private EStatus status;
+    private Long departmentId;
 }
