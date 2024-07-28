@@ -1,5 +1,6 @@
 package backend.isac.model.uipath;
 
+import backend.isac.model.enums.EEnvironmentType;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,9 @@ public class UiPathOrchestrator {
 
     private String url;
     private String authToken;
+
+    @Enumerated(EnumType.STRING)
+    private EEnvironmentType environmentType;
 
     @OneToMany(mappedBy = "orchestrator", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UiPathTenant> tenants;

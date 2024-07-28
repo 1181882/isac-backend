@@ -27,11 +27,11 @@ public class ProjectVersion {
     private LocalDateTime deployDateProd;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "lifecycle", nullable = false)
+    @Column(nullable = false)
     private ELifecycle lifecycle;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Column(nullable = false)
     private EStatus status;
 
     @Embedded
