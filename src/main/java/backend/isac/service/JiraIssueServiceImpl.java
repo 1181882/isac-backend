@@ -33,17 +33,8 @@ public class JiraIssueServiceImpl implements JiraIssueService {
 
     @Override
     public JiraIssueDTO createJiraIssue(JiraIssueDTO jiraIssueDTO) {
-        JiraProject jiraProject = jiraProjectRepository.findById(jiraIssueDTO.getJiraProjectId())
-                .orElseThrow(() -> new ResourceNotFoundException("JiraProject not found with id " + jiraIssueDTO.getJiraProjectId()));
-
-        JiraIssue jiraIssue = jiraIssueMapper.toEntity(jiraIssueDTO);
-        jiraIssue.setJiraProject(jiraProject);
-
-        if (jiraIssueDTO.getProjectVersionIds() != null) {
-            List<ProjectVersion> projectVersions = projectVersionRepository.findAllById(jiraIssueDTO.getProjectVersionIds());
-            jiraIssue.setProjectVersions(projectVersions);
-        }
-
+        JiraIssue jiraIssue = new JiraIssue();
+        setCommonJiraIssueFields(jiraIssue, jiraIssueDTO);
         JiraIssue savedIssue = jiraIssueRepository.save(jiraIssue);
         return jiraIssueMapper.toDTO(savedIssue);
     }
@@ -51,35 +42,23 @@ public class JiraIssueServiceImpl implements JiraIssueService {
     @Override
     public JiraIssueDTO updateJiraIssue(Long id, JiraIssueDTO jiraIssueDTO) {
         JiraIssue jiraIssue = jiraIssueRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("JiraIssue not found with id " + id));
-
-        JiraProject jiraProject = jiraProjectRepository.findById(jiraIssueDTO.getJiraProjectId())
-                .orElseThrow(() -> new ResourceNotFoundException("JiraProject not found with id " + jiraIssueDTO.getJiraProjectId()));
-
-        jiraIssue.setName(jiraIssueDTO.getName());
-        jiraIssue.setIssueType(jiraIssueDTO.getIssueType());
-        jiraIssue.setJiraProject(jiraProject);
-
-        if (jiraIssueDTO.getProjectVersionIds() != null) {
-            List<ProjectVersion> projectVersions = projectVersionRepository.findAllById(jiraIssueDTO.getProjectVersionIds());
-            jiraIssue.setProjectVersions(projectVersions);
-        }
-
+                .orElseThrow(() -> new ResourceNotFoundException("Jira Issue not found with id " + id));
+        setCommonJiraIssueFields(jiraIssue, jiraIssueDTO);
         JiraIssue updatedIssue = jiraIssueRepository.save(jiraIssue);
         return jiraIssueMapper.toDTO(updatedIssue);
     }
-
+    
     @Override
     public void deleteJiraIssue(Long id) {
         JiraIssue jiraIssue = jiraIssueRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("JiraIssue not found with id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Jira Issue not found with id " + id));
         jiraIssueRepository.delete(jiraIssue);
     }
 
     @Override
     public JiraIssueDTO getJiraIssueById(Long id) {
         JiraIssue jiraIssue = jiraIssueRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("JiraIssue not found with id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Jira Issue not found with id " + id));
         JiraIssueDTO jiraIssueDTO = jiraIssueMapper.toDTO(jiraIssue);
         jiraIssueDTO.setProjectVersionIds(jiraIssue.getProjectVersions().stream().map(ProjectVersion::getId).collect(Collectors.toList()));
         return jiraIssueDTO;
@@ -88,11 +67,27 @@ public class JiraIssueServiceImpl implements JiraIssueService {
     @Override
     public List<JiraIssueDTO> getAllJiraIssues() {
         return jiraIssueRepository.findAll().stream()
-                .map(jiraIssue -> {
-                    JiraIssueDTO dto = jiraIssueMapper.toDTO(jiraIssue);
-                    dto.setProjectVersionIds(jiraIssue.getProjectVersions().stream().map(ProjectVersion::getId).collect(Collectors.toList()));
-                    return dto;
-                })
+                .map(this::convertToDtoWithRelations)
                 .collect(Collectors.toList());
+    }
+
+    private void setCommonJiraIssueFields(JiraIssue jiraIssue, JiraIssueDTO jiraIssueDTO) {
+        JiraProject jiraProject = jiraProjectRepository.findById(jiraIssueDTO.getJiraProjectId())
+                .orElseThrow(() -> new ResourceNotFoundException("Jira Project not found with id " + jiraIssueDTO.getJiraProjectId()));
+        jiraIssue.setName(jiraIssueDTO.getName());
+        jiraIssue.setIssueType(jiraIssueDTO.getIssueType());
+        jiraIssue.setIssueStatus(jiraIssueDTO.getIssueStatus());
+        jiraIssue.setJiraProject(jiraProject);
+
+        if (jiraIssueDTO.getProjectVersionIds() != null) {
+            List<ProjectVersion> projectVersions = projectVersionRepository.findAllById(jiraIssueDTO.getProjectVersionIds());
+            jiraIssue.setProjectVersions(projectVersions);
+        }
+    }
+
+    private JiraIssueDTO convertToDtoWithRelations(JiraIssue jiraIssue) {
+        JiraIssueDTO dto = jiraIssueMapper.toDTO(jiraIssue);
+        dto.setProjectVersionIds(jiraIssue.getProjectVersions().stream().map(ProjectVersion::getId).collect(Collectors.toList()));
+        return dto;
     }
 }
