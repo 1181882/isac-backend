@@ -13,5 +13,6 @@ public interface ProjectVersionMapper {
     @Mapping(target = "project", ignore = true)
     @Mapping(target = "employees", ignore = true)
     @Mapping(target = "uipathProcesses", ignore = true)
+    @Mapping(target = "documents", ignore = true)
     ProjectVersion toEntity(ProjectVersionDTO projectVersionDTO);
 }

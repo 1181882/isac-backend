@@ -22,4 +22,5 @@ public class ProjectVersionDTO {
     private List<Long> employeeIds;
     private List<Long> uipathProcessIds;
     private List<Long> dashboardIds;
+    private List<DocumentDTO> documents;
 }

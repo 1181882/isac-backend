@@ -69,4 +69,7 @@ public class ProjectVersion {
             joinColumns = @JoinColumn(name = "version_id"),
             inverseJoinColumns = @JoinColumn(name = "dashboard_id"))
     private List<Dashboard> dashboards;
+
+    @OneToMany(mappedBy = "projectVersion", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Document> documents;
 }

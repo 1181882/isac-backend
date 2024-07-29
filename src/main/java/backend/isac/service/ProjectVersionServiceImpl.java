@@ -1,14 +1,17 @@
 package backend.isac.service;
 
 import backend.isac.model.uipath.UiPathProcess;
+import backend.isac.dto.DocumentDTO;
 import backend.isac.dto.ProjectVersionDTO;
 import backend.isac.exception.ResourceNotFoundException;
 import backend.isac.mapper.ProjectVersionMapper;
+import backend.isac.mapper.DocumentMapper;
 import backend.isac.model.*;
 import backend.isac.repository.*;
 import backend.isac.repository.uipath.UiPathProcessRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,17 +26,25 @@ public class ProjectVersionServiceImpl implements ProjectVersionService {
     private final EmployeeRepository employeeRepository;
     private final UiPathProcessRepository uiPathProcessRepository;
     private final DashboardRepository dashboardRepository;
+    private final DocumentRepository documentRepository;
     private final ProjectVersionMapper projectVersionMapper;
+    private final DocumentMapper documentMapper;
 
     @Autowired
-    public ProjectVersionServiceImpl(ProjectVersionRepository projectVersionRepository, JiraIssueRepository jiraIssueRepository, ProjectRepository projectRepository, EmployeeRepository employeeRepository, UiPathProcessRepository uiPathProcessRepository, DashboardRepository dashboardRepository, ProjectVersionMapper projectVersionMapper) {
+    public ProjectVersionServiceImpl(ProjectVersionRepository projectVersionRepository, JiraIssueRepository jiraIssueRepository,
+                                     ProjectRepository projectRepository, EmployeeRepository employeeRepository,
+                                     UiPathProcessRepository uiPathProcessRepository, DashboardRepository dashboardRepository,
+                                     ProjectVersionMapper projectVersionMapper, DocumentRepository documentRepository,
+                                     DocumentMapper documentMapper) {
         this.projectVersionRepository = projectVersionRepository;
         this.jiraIssueRepository = jiraIssueRepository;
         this.projectRepository = projectRepository;
         this.employeeRepository = employeeRepository;
         this.uiPathProcessRepository = uiPathProcessRepository;
         this.dashboardRepository = dashboardRepository;
+        this.documentRepository = documentRepository;
         this.projectVersionMapper = projectVersionMapper;
+        this.documentMapper = documentMapper;
     }
 
     @Override
@@ -90,6 +101,7 @@ public class ProjectVersionServiceImpl implements ProjectVersionService {
         projectVersion.setEmployees(employeeRepository.findAllById(projectVersionDTO.getEmployeeIds()));
         projectVersion.setUipathProcesses(uiPathProcessRepository.findAllById(projectVersionDTO.getUipathProcessIds()));
         projectVersion.setDashboards(dashboardRepository.findAllById(projectVersionDTO.getDashboardIds()));
+        projectVersion.setDocuments(documentRepository.findAllById(projectVersionDTO.getDocuments().stream().map(DocumentDTO::getId).collect(Collectors.toList())));
     }
 
     private ProjectVersionDTO convertToDtoWithRelations(ProjectVersion projectVersion) {
@@ -97,6 +109,7 @@ public class ProjectVersionServiceImpl implements ProjectVersionService {
         projectVersionDTO.setJiraIssueIds(projectVersion.getJiraIssues().stream().map(JiraIssue::getId).collect(Collectors.toList()));
         projectVersionDTO.setEmployeeIds(projectVersion.getEmployees().stream().map(Employee::getId).collect(Collectors.toList()));
         projectVersionDTO.setUipathProcessIds(projectVersion.getUipathProcesses().stream().map(UiPathProcess::getId).collect(Collectors.toList()));
+        projectVersionDTO.setDocuments(projectVersion.getDocuments().stream().map(documentMapper::toDTO).collect(Collectors.toList()));
         return projectVersionDTO;
     }
 }

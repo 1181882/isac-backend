@@ -36,4 +36,8 @@ public class Document {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ECompletionLevel completionLevel;
+
+    @ManyToOne
+    @JoinColumn(name = "project_version_id", nullable = false)
+    private ProjectVersion projectVersion;
 }

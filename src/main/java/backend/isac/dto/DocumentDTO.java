@@ -14,4 +14,5 @@ public class DocumentDTO {
     private ELanguage language;
     private EDocumentType documentType;
     private ECompletionLevel completionLevel;
+    private Long projectVersionId;
 }
