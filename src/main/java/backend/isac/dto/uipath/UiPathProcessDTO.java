@@ -15,4 +15,5 @@ public class UiPathProcessDTO {
     private Long folderId;
     private List<UiPathTriggerDTO> triggers;
     private List<Long> projectVersionIds;
+    private List<Long> automatedApplicationIds;
 }

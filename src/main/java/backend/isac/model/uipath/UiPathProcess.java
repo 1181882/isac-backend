@@ -1,6 +1,7 @@
 package backend.isac.model.uipath;
 
 import backend.isac.model.Version;
+import backend.isac.model.AutomatedApplication;
 import backend.isac.model.ProjectVersion;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -35,4 +36,12 @@ public class UiPathProcess {
 
     @ManyToMany(mappedBy = "uipathProcesses")
     private List<ProjectVersion> projectVersions;
+
+    @ManyToMany
+    @JoinTable(
+            name = "uipath_process_automated_application",
+            joinColumns = @JoinColumn(name = "uipath_process_id"),
+            inverseJoinColumns = @JoinColumn(name = "automated_application_id")
+    )
+    private List<AutomatedApplication> automatedApplications;
 }

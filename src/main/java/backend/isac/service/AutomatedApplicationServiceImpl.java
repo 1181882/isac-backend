@@ -4,7 +4,9 @@ import backend.isac.dto.AutomatedApplicationDTO;
 import backend.isac.exception.ResourceNotFoundException;
 import backend.isac.mapper.AutomatedApplicationMapper;
 import backend.isac.model.AutomatedApplication;
+import backend.isac.model.uipath.UiPathProcess;
 import backend.isac.repository.AutomatedApplicationRepository;
+import backend.isac.repository.uipath.UiPathProcessRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,17 +17,23 @@ import java.util.stream.Collectors;
 public class AutomatedApplicationServiceImpl implements AutomatedApplicationService {
 
     private final AutomatedApplicationRepository automatedApplicationRepository;
+    private final UiPathProcessRepository uiPathProcessRepository;
     private final AutomatedApplicationMapper automatedApplicationMapper;
 
     @Autowired
-    public AutomatedApplicationServiceImpl(AutomatedApplicationRepository automatedApplicationRepository, AutomatedApplicationMapper automatedApplicationMapper) {
+    public AutomatedApplicationServiceImpl(AutomatedApplicationRepository automatedApplicationRepository, UiPathProcessRepository uiPathProcessRepository, AutomatedApplicationMapper automatedApplicationMapper) {
         this.automatedApplicationRepository = automatedApplicationRepository;
+        this.uiPathProcessRepository = uiPathProcessRepository;
         this.automatedApplicationMapper = automatedApplicationMapper;
     }
 
     @Override
     public AutomatedApplicationDTO createAutomatedApplication(AutomatedApplicationDTO automatedApplicationDTO) {
         AutomatedApplication automatedApplication = automatedApplicationMapper.toEntity(automatedApplicationDTO);
+        if (automatedApplicationDTO.getUipathProcessIds() != null) {
+            List<UiPathProcess> uiPathProcesses = uiPathProcessRepository.findAllById(automatedApplicationDTO.getUipathProcessIds());
+            automatedApplication.setUipathProcesses(uiPathProcesses);
+        }
         AutomatedApplication savedApplication = automatedApplicationRepository.save(automatedApplication);
         return automatedApplicationMapper.toDTO(savedApplication);
     }
@@ -38,6 +46,11 @@ public class AutomatedApplicationServiceImpl implements AutomatedApplicationServ
         automatedApplication.setName(automatedApplicationDTO.getName());
         automatedApplication.setApplicationType(automatedApplicationDTO.getApplicationType());
         automatedApplication.setAutomationType(automatedApplicationDTO.getAutomationType());
+
+        if (automatedApplicationDTO.getUipathProcessIds() != null) {
+            List<UiPathProcess> uiPathProcesses = uiPathProcessRepository.findAllById(automatedApplicationDTO.getUipathProcessIds());
+            automatedApplication.setUipathProcesses(uiPathProcesses);
+        }
 
         AutomatedApplication updatedApplication = automatedApplicationRepository.save(automatedApplication);
         return automatedApplicationMapper.toDTO(updatedApplication);
