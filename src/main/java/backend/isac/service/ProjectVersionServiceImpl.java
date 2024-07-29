@@ -1,14 +1,12 @@
 package backend.isac.service;
 
+import backend.isac.model.uipath.UiPathProcess;
 import backend.isac.dto.ProjectVersionDTO;
 import backend.isac.exception.ResourceNotFoundException;
 import backend.isac.mapper.ProjectVersionMapper;
-import backend.isac.model.Dashboard;
-import backend.isac.model.Process;
-import backend.isac.model.ProjectVersion;
-import backend.isac.repository.DashboardRepository;
-import backend.isac.repository.ProcessRepository;
-import backend.isac.repository.ProjectVersionRepository;
+import backend.isac.model.*;
+import backend.isac.repository.*;
+import backend.isac.repository.uipath.UiPathProcessRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,14 +18,20 @@ import java.util.stream.Collectors;
 public class ProjectVersionServiceImpl implements ProjectVersionService {
 
     private final ProjectVersionRepository projectVersionRepository;
-    private final ProcessRepository processRepository;
+    private final JiraIssueRepository jiraIssueRepository;
+    private final ProjectRepository projectRepository;
+    private final EmployeeRepository employeeRepository;
+    private final UiPathProcessRepository uiPathProcessRepository;
     private final DashboardRepository dashboardRepository;
     private final ProjectVersionMapper projectVersionMapper;
 
     @Autowired
-    public ProjectVersionServiceImpl(ProjectVersionRepository projectVersionRepository, ProcessRepository processRepository, DashboardRepository dashboardRepository, ProjectVersionMapper projectVersionMapper) {
+    public ProjectVersionServiceImpl(ProjectVersionRepository projectVersionRepository, JiraIssueRepository jiraIssueRepository, ProjectRepository projectRepository, EmployeeRepository employeeRepository, UiPathProcessRepository uiPathProcessRepository, DashboardRepository dashboardRepository, ProjectVersionMapper projectVersionMapper) {
         this.projectVersionRepository = projectVersionRepository;
-        this.processRepository = processRepository;
+        this.jiraIssueRepository = jiraIssueRepository;
+        this.projectRepository = projectRepository;
+        this.employeeRepository = employeeRepository;
+        this.uiPathProcessRepository = uiPathProcessRepository;
         this.dashboardRepository = dashboardRepository;
         this.projectVersionMapper = projectVersionMapper;
     }
@@ -36,7 +40,7 @@ public class ProjectVersionServiceImpl implements ProjectVersionService {
     public ProjectVersionDTO createProjectVersion(ProjectVersionDTO projectVersionDTO) {
         ProjectVersion projectVersion = projectVersionMapper.toEntity(projectVersionDTO);
         projectVersion.setCreatedDate(LocalDateTime.now());
-
+        mapProjectVersionRelations(projectVersion, projectVersionDTO);
         ProjectVersion savedVersion = projectVersionRepository.save(projectVersion);
         return projectVersionMapper.toDTO(savedVersion);
     }
@@ -52,15 +56,7 @@ public class ProjectVersionServiceImpl implements ProjectVersionService {
         projectVersion.setStatus(projectVersionDTO.getStatus());
         projectVersion.setVersion(projectVersionDTO.getVersion());
 
-        projectVersion.setProcesses(projectVersionDTO.getProcessIds().stream()
-                .map(processId -> processRepository.findById(processId)
-                        .orElseThrow(() -> new ResourceNotFoundException("Process not found with id " + processId)))
-                .collect(Collectors.toList()));
-
-        projectVersion.setDashboards(projectVersionDTO.getDashboardIds().stream()
-                .map(dashboardId -> dashboardRepository.findById(dashboardId)
-                        .orElseThrow(() -> new ResourceNotFoundException("Dashboard not found with id " + dashboardId)))
-                .collect(Collectors.toList()));
+        mapProjectVersionRelations(projectVersion, projectVersionDTO);
 
         ProjectVersion updatedProjectVersion = projectVersionRepository.save(projectVersion);
         return projectVersionMapper.toDTO(updatedProjectVersion);
@@ -77,13 +73,30 @@ public class ProjectVersionServiceImpl implements ProjectVersionService {
     public ProjectVersionDTO getProjectVersionById(Long id) {
         ProjectVersion projectVersion = projectVersionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Version not found with id " + id));
-        return projectVersionMapper.toDTO(projectVersion);
+        return convertToDtoWithRelations(projectVersion);
     }
 
     @Override
     public List<ProjectVersionDTO> getAllProjectVersions() {
         return projectVersionRepository.findAll().stream()
-                .map(projectVersionMapper::toDTO)
+                .map(this::convertToDtoWithRelations)
                 .collect(Collectors.toList());
+    }
+
+    private void mapProjectVersionRelations(ProjectVersion projectVersion, ProjectVersionDTO projectVersionDTO) {
+        projectVersion.setJiraIssues(jiraIssueRepository.findAllById(projectVersionDTO.getJiraIssueIds()));
+        projectVersion.setProject(projectRepository.findById(projectVersionDTO.getProjectId())
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found with id " + projectVersionDTO.getProjectId())));
+        projectVersion.setEmployees(employeeRepository.findAllById(projectVersionDTO.getEmployeeIds()));
+        projectVersion.setUipathProcesses(uiPathProcessRepository.findAllById(projectVersionDTO.getUipathProcessIds()));
+        projectVersion.setDashboards(dashboardRepository.findAllById(projectVersionDTO.getDashboardIds()));
+    }
+
+    private ProjectVersionDTO convertToDtoWithRelations(ProjectVersion projectVersion) {
+        ProjectVersionDTO projectVersionDTO = projectVersionMapper.toDTO(projectVersion);
+        projectVersionDTO.setJiraIssueIds(projectVersion.getJiraIssues().stream().map(JiraIssue::getId).collect(Collectors.toList()));
+        projectVersionDTO.setEmployeeIds(projectVersion.getEmployees().stream().map(Employee::getId).collect(Collectors.toList()));
+        projectVersionDTO.setUipathProcessIds(projectVersion.getUipathProcesses().stream().map(UiPathProcess::getId).collect(Collectors.toList()));
+        return projectVersionDTO;
     }
 }

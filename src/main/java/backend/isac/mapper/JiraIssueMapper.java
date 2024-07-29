@@ -7,9 +7,9 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface JiraIssueMapper {
-    @Mapping(target = "processId", source = "process.id")
+    @Mapping(target = "projectVersionIds", ignore = true)
     JiraIssueDTO toDTO(JiraIssue jiraIssue);
 
-    @Mapping(target = "process.id", source = "processId")
+    @Mapping(target = "projectVersions", ignore = true)
     JiraIssue toEntity(JiraIssueDTO jiraIssueDTO);
 }

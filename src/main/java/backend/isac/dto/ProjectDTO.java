@@ -6,6 +6,8 @@ import backend.isac.model.enums.ESupportTeam;
 import backend.isac.model.enums.EStatus;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class ProjectDTO {
     private Long id;
@@ -17,4 +19,5 @@ public class ProjectDTO {
     private EAsset asset;
     private EStatus status;
     private Long departmentId;
+    private List<Long> projectVersionIds;
 }

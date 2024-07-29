@@ -17,6 +17,9 @@ public class ProjectVersionDTO {
     private ELifecycle lifecycle;
     private EStatus status;
     private Version version;
-    private List<Long> processIds;
+    private List<Long> jiraIssueIds;
+    private Long projectId;
+    private List<Long> employeeIds;
+    private List<Long> uipathProcessIds;
     private List<Long> dashboardIds;
 }

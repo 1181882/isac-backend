@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @Entity
@@ -36,4 +38,7 @@ public class Employee {
     @ManyToOne
     @JoinColumn(name = "professional_function_id", nullable = false)
     private ProfessionalFunction professionalFunction;
+
+    @ManyToMany(mappedBy = "employees")
+    private List<ProjectVersion> projectVersions;
 }

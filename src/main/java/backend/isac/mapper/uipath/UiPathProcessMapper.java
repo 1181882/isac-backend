@@ -11,5 +11,6 @@ public interface UiPathProcessMapper {
     UiPathProcessDTO toUiPathProcessDTO(UiPathProcess process);
 
     @Mapping(source = "folderId", target = "folder.id")
+    @Mapping(target = "projectVersions", ignore = true)
     UiPathProcess toUiPathProcess(UiPathProcessDTO processDTO);
 }

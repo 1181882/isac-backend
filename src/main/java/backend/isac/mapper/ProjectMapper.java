@@ -13,5 +13,6 @@ public interface ProjectMapper {
 
     @Mapping(source = "departmentId", target = "department.id")
     @Mapping(source = "iuaCodeId", target = "iuaCode.id")
+    @Mapping(target = "projectVersions", ignore = true)
     Project toEntity(ProjectDTO projectDTO);
 }

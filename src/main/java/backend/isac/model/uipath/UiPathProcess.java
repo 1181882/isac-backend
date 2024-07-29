@@ -1,6 +1,7 @@
 package backend.isac.model.uipath;
 
 import backend.isac.model.Version;
+import backend.isac.model.ProjectVersion;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,4 +32,7 @@ public class UiPathProcess {
 
     @OneToMany(mappedBy = "process", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UiPathTrigger> triggers;
+
+    @ManyToMany(mappedBy = "uipathProcesses")
+    private List<ProjectVersion> projectVersions;
 }

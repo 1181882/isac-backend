@@ -2,6 +2,8 @@ package backend.isac.dto;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class EmployeeDTO {
     private Long id;
@@ -12,4 +14,5 @@ public class EmployeeDTO {
     private boolean isInternal;
     private Long departmentId;
     private Long professionalFunctionId;
+    private List<Long> projectVersionIds;
 }
