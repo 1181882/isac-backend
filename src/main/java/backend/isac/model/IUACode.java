@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @Entity
 @NoArgsConstructor
-@Table(name = "iua_code", uniqueConstraints = @UniqueConstraint(columnNames = "abbreviation"))
+@Table(name = "iua_codes", uniqueConstraints = @UniqueConstraint(columnNames = "abbreviation"))
 public class IUACode extends BaseEntity {
 
     @OneToMany(mappedBy = "iuaCode", cascade = CascadeType.ALL)

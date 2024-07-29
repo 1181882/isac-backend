@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "uipath_process")
+@Table(name = "uipath_processes")
 public class UiPathProcess {
 
     @Id

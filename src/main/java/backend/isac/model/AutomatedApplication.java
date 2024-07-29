@@ -10,7 +10,7 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "automated_application")
+@Table(name = "automated_applications")
 public class AutomatedApplication {
 
     @Id

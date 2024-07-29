@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "uipath_trigger")
+@Table(name = "uipath_triggers")
 public class UiPathTrigger {
 
     @Id

@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "uipath_tenant")
+@Table(name = "uipath_tenants")
 public class UiPathTenant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

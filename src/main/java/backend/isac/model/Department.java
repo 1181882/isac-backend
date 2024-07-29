@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "department", uniqueConstraints = @UniqueConstraint(columnNames = "abbreviation"))
+@Table(name = "departments", uniqueConstraints = @UniqueConstraint(columnNames = "abbreviation"))
 public class Department extends BaseEntity {
 
     @ManyToOne

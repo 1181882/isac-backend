@@ -11,7 +11,7 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "project_version")
+@Table(name = "project_versions")
 public class ProjectVersion {
 
     @Id

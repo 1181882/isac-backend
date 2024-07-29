@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "jira_issue")
+@Table(name = "jira_issues")
 public class JiraIssue {
 
     @Id

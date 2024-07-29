@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "uipath_user")
+@Table(name = "uipath_users")
 public class UiPathUser {
 
     @Id

@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "uipath_library")
+@Table(name = "uipath_libraries")
 public class UiPathLibrary {
 
     @Id

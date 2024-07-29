@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "company",uniqueConstraints = @UniqueConstraint(columnNames = "abbreviation"))
+@Table(name = "companies",uniqueConstraints = @UniqueConstraint(columnNames = "abbreviation"))
 public class Company extends BaseEntity {
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)

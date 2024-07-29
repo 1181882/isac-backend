@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "jira_project")
+@Table(name = "jira_projects")
 public class JiraProject {
 
     @Id

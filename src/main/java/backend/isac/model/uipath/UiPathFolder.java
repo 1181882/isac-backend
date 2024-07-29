@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "uipath_folder")
+@Table(name = "uipath_folders")
 public class UiPathFolder {
 
     @Id

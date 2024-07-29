@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "business_line",uniqueConstraints = @UniqueConstraint(columnNames = "abbreviation"))
+@Table(name = "business_lines",uniqueConstraints = @UniqueConstraint(columnNames = "abbreviation"))
 public class BusinessLine extends BaseEntity {
 
     @OneToMany(mappedBy = "businessLine")

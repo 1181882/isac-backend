@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "professional_function")
+@Table(name = "professional_functions")
 public class ProfessionalFunction {
 
     @Id

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "uipath_robot")
+@Table(name = "uipath_robots")
 public class UiPathRobot {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

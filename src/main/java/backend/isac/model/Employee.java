@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "employee", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
+@Table(name = "employees", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 public class Employee {
 
     @Id

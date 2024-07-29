@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "uipath_orchestrator")
+@Table(name = "uipath_orchestrators")
 public class UiPathOrchestrator {
 
     @Id
