@@ -12,10 +12,14 @@ public enum EDocumentType {
     BPMN("Business Process Model and Notation"),
 
     // Technical Documentation
+    SSD("System Specification Document"),
+    PDD("Product Design Document"),
+    HANDBOOK("Handbook"),
     SDS("Solution Design Specification"),
     TDD("Technical Design Document"),
     IM("Installation and Configuration Manual"),
     ID("Integration Documentation"),
+
 
     // Development Documentation
     SC("Source Code with Comments"),

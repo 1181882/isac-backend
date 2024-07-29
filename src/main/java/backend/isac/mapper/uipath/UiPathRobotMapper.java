@@ -9,11 +9,9 @@ import org.mapstruct.Mapping;
 public interface UiPathRobotMapper {
     @Mapping(source = "machine.id", target = "machineId")
     @Mapping(source = "tenant.id", target = "tenantId")
-    @Mapping(source = "environment.id", target = "environmentId")
     UiPathRobotDTO toUiPathRobotDTO(UiPathRobot robot);
 
     @Mapping(source = "machineId", target = "machine.id")
     @Mapping(source = "tenantId", target = "tenant.id")
-    @Mapping(source = "environmentId", target = "environment.id")
     UiPathRobot toUiPathRobot(UiPathRobotDTO robotDTO);
 }

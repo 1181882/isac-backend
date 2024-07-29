@@ -1,6 +1,7 @@
 package backend.isac.dto.uipath;
 
 import backend.isac.model.Version;
+import backend.isac.model.enums.EEnvironmentType;
 import backend.isac.model.enums.EUipathLicenseType;
 import lombok.Data;
 
@@ -12,6 +13,6 @@ public class UiPathRobotDTO {
     private Version version;
     private Long machineId;
     private Long tenantId;
-    private Long environmentId;
+    private EEnvironmentType environmentType;
     private EUipathLicenseType licenseType;
 }

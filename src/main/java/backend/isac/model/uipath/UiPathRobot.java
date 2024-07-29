@@ -1,6 +1,7 @@
 package backend.isac.model.uipath;
 
 import backend.isac.model.Version;
+import backend.isac.model.enums.EEnvironmentType;
 import backend.isac.model.enums.EUipathLicenseType;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -22,6 +23,9 @@ public class UiPathRobot {
     @Enumerated(EnumType.STRING)
     private EUipathLicenseType licenseType;
 
+    @Enumerated(EnumType.STRING)
+    private EEnvironmentType environmentType;
+
     @ManyToOne
     @JoinColumn(name = "machine_id")
     private UiPathMachine machine;
@@ -29,8 +33,4 @@ public class UiPathRobot {
     @ManyToOne
     @JoinColumn(name = "tenant_id")
     private UiPathTenant tenant;
-
-    @ManyToOne
-    @JoinColumn(name = "environment_id")
-    private UiPathEnvironment environment;
 }
